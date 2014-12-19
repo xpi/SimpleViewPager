@@ -32,26 +32,27 @@
         <Button
             android:id="@+id/button1"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="fill_parent"
             android:layout_weight="1"
-            android:background="@drawable/input_bg_selector"
+            android:background="#dddccc"
             android:text="page1" />
 
         <Button
             android:id="@+id/button2"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="fill_parent"
             android:layout_weight="1"
-            android:background="@drawable/input_bg_selector"
+            android:background="#daaaee"
             android:text="page2" />
 
         <Button
             android:id="@+id/button3"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="fill_parent"
             android:layout_weight="1"
-            android:background="@drawable/input_bg_selector"
+            android:background="#dddfff"
             android:text="page3" />
     </LinearLayout>
+<!--      #dddccc #daaaee #dddfff -->
 
 </LinearLayout>

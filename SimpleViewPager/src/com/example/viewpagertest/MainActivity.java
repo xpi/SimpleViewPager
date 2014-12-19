@@ -1,6 +1,6 @@
 package com.example.viewpagertest;
 
-import android.graphics.drawable.Drawable;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -15,7 +15,21 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 
+/**
+ * @title: MainActivity.java
+ * @description: 一个类似微信的viewpager
+ * @copyright: Copyright (c) 2014
+ * @company: HanZhiSoft
+ * @author HuangXiaoPeng
+ * @date 2014-12-19
+ * @version 1.0
+ */
 public class MainActivity extends FragmentActivity {
+	private Fragment f1 = new Fragment1();
+	private Fragment f2 = new Fragment2();
+	private Fragment f3 = new Fragment3();
+	private Fragment[] fras = { f1, f2, f3 };
+
 	/**
 	 * The number of pages (wizard steps) to show in this demo.
 	 */
@@ -32,19 +46,14 @@ public class MainActivity extends FragmentActivity {
 	 */
 	private PagerAdapter mPagerAdapter;
 	Button btn1, btn2, btn3;
+	Button[] btns = new Button[3];
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		// Instantiate a ViewPager and a PagerAdapter.
-		btn1 = (Button) findViewById(R.id.button1);
-		btn2 = (Button) findViewById(R.id.button2);
-		btn3 = (Button) findViewById(R.id.button3);
-		btn1.setOnClickListener(new BtnListener());
-		btn2.setOnClickListener(new BtnListener());
-		btn3.setOnClickListener(new BtnListener());
-		btn1.setBackgroundResource(R.drawable.btn_current1);
+		initUI();
+		// viewpager使用方法类似ListView
 
 		mPager = (ViewPager) findViewById(R.id.pager);
 		mPagerAdapter = new ScreenSlidePagerAdapter(getSupportFragmentManager());
@@ -52,61 +61,125 @@ public class MainActivity extends FragmentActivity {
 
 		mPager.setOnPageChangeListener(new OnPageChangeListener() {
 
+			int current = 0;
+			int next = -1;
+			int state = 0;
+
 			@Override
 			public void onPageSelected(int pagenum) {
-				switch (pagenum) {
-				case 0:
-					btn1.setBackgroundResource(R.drawable.btn_current1);
-					btn2.setBackgroundResource(R.drawable.btn_out);
-					btn3.setBackgroundResource(R.drawable.btn_out);
-					break;
-				case 1:
-					btn2.setBackgroundResource(R.drawable.btn_current2);
-					btn1.setBackgroundResource(R.drawable.btn_out);
-					btn3.setBackgroundResource(R.drawable.btn_out);
-					break;
+				current = pagenum;
 
-				case 2:
-					btn3.setBackgroundResource(R.drawable.btn_current3);
-					btn1.setBackgroundResource(R.drawable.btn_out);
-					btn2.setBackgroundResource(R.drawable.btn_out);
-					break;
+				for (int i = 0; i < btns.length; i++) {
+					if (i == current) {
+
+						btns[i].getBackground().setAlpha(255);
+						btns[i].setTextColor(Color.argb(255, 0, 0, 0));
+					} else {
+						btns[i].getBackground().setAlpha(0);
+						btns[i].setTextColor(Color.argb(127, 0, 0, 0));
+
+					}
 
 				}
 			}
 
 			@Override
 			public void onPageScrolled(int arg0, float arg1, int arg2) {
-				//btn1.setText(arg0+" "+arg1+" "+arg2);
+				int orien;
+				if (state == 1 && arg1 != 0) {
+					if (current == arg0) {
+						orien = 1;
+						next = arg0 + 1;
+						changeBtnStyle(arg1, current, next, orien);
+						return;
+					}
+					orien = -1;
+					next = arg0;
+					changeBtnStyle(arg1, current, next, orien);
+				}
+
 			}
 
 			@Override
 			public void onPageScrollStateChanged(int arg0) {
-				// TODO Auto-generated method stub
+
+				state = arg0;
+				if (state == 2) {
+					btns[current].getBackground().setAlpha(255);
+					btns[current].setTextColor(Color.argb(255, 0, 0, 0));
+					btns[next].getBackground().setAlpha(0);
+					btns[next].setTextColor(Color.argb(127, 0, 0, 0));
+				}
 
 			}
+
+			// 渐变底部bar样式
+			private void changeBtnStyle(float size, int current, int next,
+					int orien) {
+				float fadeIn = (float) (Math.round(size * 100)) / 100;
+				float fadeOut = (float) (Math.round((1 - size) * 100)) / 100;
+				if (orien == 1) {
+
+					btns[current].getBackground().setAlpha(
+							(int) (255 * fadeOut));
+					btns[current].setTextColor(Color.argb(
+							(int) (127 * fadeOut) + 127, 0, 0, 0));
+					btns[next].getBackground().setAlpha((int) (255 * fadeIn));
+					btns[next].setTextColor(Color.argb(
+							(int) (127 * fadeIn) + 127, 0, 0, 0));
+					// btns[next].setText(fadeIn + "");
+					// btns[current].setText(fadeOut + "");
+
+				}
+				if (orien == -1) {
+					btns[current].getBackground()
+							.setAlpha((int) (255 * fadeIn));
+					btns[current].setTextColor(Color.argb(
+							(int) (127 * fadeIn) + 127, 0, 0, 0));
+					btns[next].getBackground().setAlpha((int) (255 * fadeOut));
+					btns[next].setTextColor(Color.argb(
+							(int) (127 * fadeOut) + 127, 0, 0, 0));
+					// btns[next].setText(fadeOut + "");
+					// btns[current].setText(fadeIn + "");
+
+				}
+
+			}
+
 		});
 
 	}
 
+	private void initUI() {
+		btn1 = (Button) findViewById(R.id.button1);
+		btn2 = (Button) findViewById(R.id.button2);
+		btn3 = (Button) findViewById(R.id.button3);
+		btn1.getBackground().setAlpha(255);
+		btn2.getBackground().setAlpha(0);
+		btn3.getBackground().setAlpha(0);
+
+		btns[0] = btn1;
+		btns[1] = btn2;
+		btns[2] = btn3;
+
+		btn1.setOnClickListener(new BtnListener());
+		btn2.setOnClickListener(new BtnListener());
+		btn3.setOnClickListener(new BtnListener());
+	}
+
 	@Override
 	public void onBackPressed() {
-		// TODO Auto-generated method stub
 		super.onBackPressed();
 	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.main, menu);
 		return true;
 	}
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		// Handle action bar item clicks here. The action bar will
-		// automatically handle clicks on the Home/Up button, so long
-		// as you specify a parent activity in AndroidManifest.xml.
 		int id = item.getItemId();
 		if (id == R.id.action_settings) {
 			return true;
@@ -114,6 +187,7 @@ public class MainActivity extends FragmentActivity {
 		return super.onOptionsItemSelected(item);
 	}
 
+	// viewpager scroll listener
 	private class ScreenSlidePagerAdapter extends FragmentStatePagerAdapter {
 		public ScreenSlidePagerAdapter(FragmentManager fm) {
 			super(fm);
@@ -123,15 +197,13 @@ public class MainActivity extends FragmentActivity {
 		public Fragment getItem(int position) {
 			switch (position) {
 			case 0:
-				return new Fragment1();
-
+				return fras[0];
 			case 1:
-				return new Fragment2();
+				return fras[1];
 			case 2:
-				return new Fragment3();
-			default:
-				return new Fragment3();
+				return fras[2];
 			}
+			return fras[0];
 		}
 
 		@Override
@@ -140,8 +212,8 @@ public class MainActivity extends FragmentActivity {
 		}
 	}
 
+	// bottom bar lisetner
 	class BtnListener implements OnClickListener {
-
 		@Override
 		public void onClick(View v) {
 			int bid = v.getId();
@@ -159,7 +231,6 @@ public class MainActivity extends FragmentActivity {
 
 			}
 		}
-
 	}
 
 }
