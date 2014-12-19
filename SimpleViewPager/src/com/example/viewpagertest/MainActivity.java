@@ -77,8 +77,7 @@ public class MainActivity extends FragmentActivity {
 
 			@Override
 			public void onPageScrolled(int arg0, float arg1, int arg2) {
-				// TODO Auto-generated method stub
-
+				//btn1.setText(arg0+" "+arg1+" "+arg2);
 			}
 
 			@Override
