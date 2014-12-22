@@ -46,6 +46,10 @@ public class MainActivity extends FragmentActivity {
 	 */
 	private PagerAdapter mPagerAdapter;
 	Button btn1, btn2, btn3;
+	int current = 0;
+	int next = 0;
+	int state = 0;
+
 	Button[] btns = new Button[3];
 
 	@Override
@@ -58,13 +62,10 @@ public class MainActivity extends FragmentActivity {
 		mPager = (ViewPager) findViewById(R.id.pager);
 		mPagerAdapter = new ScreenSlidePagerAdapter(getSupportFragmentManager());
 		mPager.setAdapter(mPagerAdapter);
-
+		mPager.setCurrentItem(0);
 		mPager.setOnPageChangeListener(new OnPageChangeListener() {
 
-			int current = 0;
-			int next = -1;
-			int state = 0;
-
+	
 			@Override
 			public void onPageSelected(int pagenum) {
 				current = pagenum;
@@ -219,13 +220,15 @@ public class MainActivity extends FragmentActivity {
 			int bid = v.getId();
 			switch (bid) {
 			case R.id.button1:
+				next=0;
 				mPager.setCurrentItem(0);
 				break;
 			case R.id.button2:
+				next=1;
 				mPager.setCurrentItem(1);
 				break;
-
 			case R.id.button3:
+				next=2;
 				mPager.setCurrentItem(2);
 				break;
 
